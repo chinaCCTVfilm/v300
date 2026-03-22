@@ -1,0 +1,12 @@
+﻿---
+const { movie } = Astro.props;
+const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/placeholder.jpg';
+---
+
+<div class="movie-card bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition">
+  <img src={poster} alt={movie.title} class="w-full h-64 object-cover" />
+  <div class="p-4">
+    <h3 class="text-lg font-bold">{movie.title}</h3>
+    <p class="text-sm text-gray-400">Rating: {movie.vote_average?.toFixed(1)}</p>
+  </div>
+</div>
