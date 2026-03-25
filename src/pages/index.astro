@@ -1,41 +1,31 @@
 ﻿---
 import MainLayout from '../layouts/MainLayout.astro';
-import MovieCard from '../components/MovieCard.astro';
 
 const apiUrl = 'https://v300-tmdb-worker.limingvv789.workers.dev/api/popular';
 
-let movies: any[] = [];
-let errorMsg = '';
+let result = '加载中...';
+let isError = false;
 
 try {
   const res = await fetch(apiUrl);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  movies = data.results || [];
+  const text = await res.text();
+  result = res.ok ? text : `错误 ${res.status}: ${text}`;
+  isError = !res.ok;
 } catch (err) {
-  errorMsg = '无法连接到 TMDB 数据源，请检查 Worker 是否正常';
-  console.error(err);
+  result = `网络错误: ${err}`;
+  isError = true;
 }
 ---
 
-<MainLayout title="V300 热门影视">
+<MainLayout title="V300 调试页面">
   <header class="p-6 bg-gradient-to-r from-purple-900 to-indigo-900">
-    <h1 class="text-4xl font-bold text-center">V300 影视平台</h1>
+    <h1 class="text-4xl font-bold text-center">V300 Worker 测试</h1>
   </header>
 
   <main class="container mx-auto p-6">
-    <h2 class="text-2xl mb-6">热门电影</h2>
-    
-    {errorMsg ? (
-      <p class="text-red-500 text-center py-12 text-lg">{errorMsg}</p>
-    ) : movies.length > 0 ? (
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {movies.map((movie: any) => (
-          <MovieCard movie={movie} />
-        ))}
-      </div>
-    ) : (
-      <p class="text-gray-400 col-span-full text-center py-12">加载中...</p>
-    )}
+    <h2 class="text-2xl mb-6">Worker 返回结果</h2>
+    <pre class="bg-gray-800 p-6 text-sm overflow-auto whitespace-pre-wrap {isError ? 'text-red-400' : 'text-green-400'}">
+{result}
+    </pre>
   </main>
 </MainLayout>
