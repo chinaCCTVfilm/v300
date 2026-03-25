@@ -1,9 +1,11 @@
 ﻿import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
+import tailwind, tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  integrations: [tailwind()],
+  vite: {
+    plugins: [tailwind(), tailwindcss()],
+  },
   output: 'static',
-  site: 'https://$CustomDomain',
+  site: 'https://v300-0nz.pages.dev/',   // 改成你的真实自定义域名
   trailingSlash: 'ignore',
 });
