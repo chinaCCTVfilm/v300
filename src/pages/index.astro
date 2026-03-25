@@ -2,13 +2,24 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import MovieCard from '../components/MovieCard.astro';
 
-// 临时注释掉真实 fetch，避免超时错误
-// const apiUrl = 'https://v300-0nz.pages.dev/api/popular';
-// const res = await fetch(apiUrl);
-// const data = await res.json();
-// const movies = data.results || [];
+const apiUrl = 'https://v300-tmdb-worker.limingvv789.workers.dev/api/popular';
 
-const movies = [];   // 临时空数组，让页面先渲染出来
+let movies = [];
+let error = null;
+
+try {
+  const res = await fetch(apiUrl, {
+    headers: { 'Cache-Control': 'no-cache' }   // 开发阶段强制刷新缓存
+  });
+  
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  
+  const data = await res.json();
+  movies = data.results || [];
+} catch (err) {
+  error = '无法加载 TMDB 数据，请检查 Worker 是否正常运行';
+  console.error(err);
+}
 ---
 
 <MainLayout title="V300 热门影视">
@@ -18,12 +29,17 @@ const movies = [];   // 临时空数组，让页面先渲染出来
 
   <main class="container mx-auto p-6">
     <h2 class="text-2xl mb-6">热门电影</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      {movies.length > 0 ? (
-        movies.map(movie => <MovieCard movie={movie} />)
-      ) : (
-        <p class="text-gray-400 col-span-full text-center py-12">正在加载热门电影数据...</p>
-      )}
-    </div>
+    
+    {error ? (
+      <p class="text-red-500 text-center py-12">{error}</p>
+    ) : movies.length > 0 ? (
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        {movies.map(movie => (
+          <MovieCard movie={movie} />
+        ))}
+      </div>
+    ) : (
+      <p class="text-gray-400 col-span-full text-center py-12">加载中...</p>
+    )}
   </main>
 </MainLayout>
