@@ -1,16 +1,7 @@
-﻿---
-const { title } = Astro.props;
----
+﻿name = "v300-tmdb-worker"
+main = "src/index.ts"
+compatibility_date = "2026-03-25"
+compatibility_flags = ["nodejs_compat"]
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title || 'V300 影视'}</title>
-    <link rel="stylesheet" href="/styles/global.css" />
-  </head>
-  <body class="bg-gray-900 text-white">
-    <slot />
-  </body>
-</html>
+[vars]
+TMDB_BASE_URL = "https://api.themoviedb.org/3"
