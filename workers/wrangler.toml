@@ -1,11 +1,7 @@
 ﻿name = "v300-tmdb-worker"
 main = "src/index.ts"
-compatibility_date = "2026-03-01"
+compatibility_date = "2026-03-25"
 compatibility_flags = ["nodejs_compat"]
-
-kv_namespaces = [
-  { binding = "MOVIE_KV", preview_id = "YOUR_PREVIEW_KV_ID", id = "YOUR_PROD_KV_ID" }
-]
 
 [vars]
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
