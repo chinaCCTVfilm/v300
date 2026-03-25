@@ -4,20 +4,16 @@ import MovieCard from '../components/MovieCard.astro';
 
 const apiUrl = 'https://v300-tmdb-worker.limingvv789.workers.dev/api/popular';
 
-let movies = [];
-let error = null;
+let movies: any[] = [];
+let errorMsg = '';
 
 try {
-  const res = await fetch(apiUrl, {
-    headers: { 'Cache-Control': 'no-cache' }   // 开发阶段强制刷新缓存
-  });
-  
+  const res = await fetch(apiUrl);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  
   const data = await res.json();
   movies = data.results || [];
 } catch (err) {
-  error = '无法加载 TMDB 数据，请检查 Worker 是否正常运行';
+  errorMsg = '无法连接到 TMDB 数据源，请检查 Worker 是否正常';
   console.error(err);
 }
 ---
@@ -30,11 +26,11 @@ try {
   <main class="container mx-auto p-6">
     <h2 class="text-2xl mb-6">热门电影</h2>
     
-    {error ? (
-      <p class="text-red-500 text-center py-12">{error}</p>
+    {errorMsg ? (
+      <p class="text-red-500 text-center py-12 text-lg">{errorMsg}</p>
     ) : movies.length > 0 ? (
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {movies.map(movie => (
+        {movies.map((movie: any) => (
           <MovieCard movie={movie} />
         ))}
       </div>
